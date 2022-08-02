@@ -2,6 +2,8 @@
   (:require [scicloj.kindly.v2.kind :as kind]
             [nextjournal.clerk :as clerk]
             [nextjournal.markdown.transform]
+            [nextjournal.clerk.parser :as parser]
+            [nextjournal.clerk.eval :as eval]
             [scicloj.kindly.v2.api :as kindly]
             [scicloj.clay.v1.view]
             [scicloj.clay.v1.tool.scittle.view :as view]
@@ -12,10 +14,11 @@
 
 (defn clerk-eval
   [file]
-  (reset! clerk/!last-file file)
-  (let [doc (clerk/parse-file file)
+  ;; !last-file is no longer API visible
+  #_ (reset! clerk/!last-file file)
+  (let [doc (parser/parse-file file)
         {:keys [blob->result]} @nextjournal.clerk.webserver/!doc]
-    (clerk/+eval-results blob->result doc)))
+    (eval/+eval-results blob->result doc)))
 
 (defn show-doc!
   ([path]
